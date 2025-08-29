@@ -6,7 +6,6 @@ import dotenv from 'dotenv';
 import Logger from './utils/logger.js';
 
 // Import routes
-import authRoutes from './routes/auth.js';
 import claimsRoutes from './routes/claims.js';
 import patientsRoutes from './routes/patients.js';
 import alertsRoutes from './routes/alerts.js';
@@ -27,9 +26,24 @@ app.use(Logger.request);
 // Security middleware
 app.use(helmet());
 
-// CORS configuration
+// CORS configuration - Allow multiple origins for development
+const allowedOrigins = [
+  'http://localhost:3003',
+  'http://172.19.112.1:3003',
+  'http://127.0.0.1:3003'
+];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3003',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -75,7 +89,6 @@ app.get('/api/test', (req, res) => {
 });
 
 // API routes
-app.use('/api/auth', authRoutes);
 app.use('/api/claims', claimsRoutes);
 app.use('/api/patients', patientsRoutes);
 app.use('/api/alerts', alertsRoutes);

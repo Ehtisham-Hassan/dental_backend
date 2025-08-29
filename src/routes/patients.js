@@ -1,12 +1,8 @@
 import express from 'express';
 import { body, validationResult } from 'express-validator';
-import { authMiddleware } from '../middleware/auth.js';
 import { DatabaseService } from '../models/dbUtils.js';
 
 const router = express.Router();
-
-// Apply authentication middleware to all routes
-router.use(authMiddleware);
 
 // GET /api/patients - Get all patients with optional filtering
 router.get('/', async (req, res) => {

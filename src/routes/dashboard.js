@@ -1,11 +1,7 @@
 import express from 'express';
-import { authMiddleware } from '../middleware/auth.js';
 import { DatabaseService } from '../models/dbUtils.js';
 
 const router = express.Router();
-
-// Apply authentication middleware to all routes
-router.use(authMiddleware);
 
 // GET /api/dashboard/stats - Get dashboard statistics
 router.get('/stats', async (req, res) => {
